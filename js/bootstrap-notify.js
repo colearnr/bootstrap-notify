@@ -20,7 +20,8 @@
   var Notification = function (element, options) {
     // Element collection
     this.$element = $(element);
-    this.$note    = $('<div class="alert"></div>');
+    this.id = 'notif-' + Math.floor(Math.random()*101);
+    this.$note    = $('<div class="alert notification" id="' + this.id + '"></div>');
     this.options  = $.extend(true, {}, $.fn.notify.defaults, options);
 
     // Setup from options
@@ -59,23 +60,27 @@
 
   var onClose = function() {
     this.options.onClose();
-    $(this.$note).remove();
+    $('#' + this.id).remove();
     this.options.onClosed();
     return false;
   };
 
   Notification.prototype.show = function () {
-    if(this.options.fadeOut.enabled)
+    if(this.options.fadeOut.enabled) {
       this.$note.delay(this.options.fadeOut.delay || 3000).fadeOut('slow', $.proxy(onClose, this));
+    }
 
     this.$element.append(this.$note);
     this.$note.alert();
   };
 
   Notification.prototype.hide = function () {
-    if(this.options.fadeOut.enabled)
+    if(this.options.fadeOut.enabled) {
       this.$note.delay(this.options.fadeOut.delay || 3000).fadeOut('slow', $.proxy(onClose, this));
-    else onClose.call(this);
+    }
+    else {
+      onClose.call(this);
+    }
   };
 
   $.fn.notify = function (options) {
